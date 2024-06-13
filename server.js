@@ -18,8 +18,9 @@ try {
     connectDb();
     console.log("database connected");
 } catch (error) {
-    console.log(err);
-    process.kill(process.pid, 'SIGTERM ')
+    console.log(error);
+    process.exit(1);
+    // process.kill(process.pid, 'SIGTERM ')
     }
 
 bot.start(async (ctx)=>{
@@ -64,7 +65,7 @@ bot.command('generate', async (ctx) =>{
     endOfTheDay.setHours(23, 59, 59, 999);
 
     //get events for the user post
-
+    try{
     const events = await eventModel.find({
         tgId: from.id,
 
@@ -78,41 +79,10 @@ bot.command('generate', async (ctx) =>{
         await ctx.reply('No events found for the day')
         return;
     }
-    //make openai api call
-
-    // try {
-    //     const chatCompletion = await openai.chat.completions.create({
-    //         messages: [
-    //             {
-    //                 role: 'system',
-    //                 content: 'Act as a senior copywriter, you write highly engaging posts for linkedin, facebook and twitter using provided thoughts/events throughout the day.'
-    //             },
-    //             {
-    //                 role: 'user',
-    //                 content: `write like a human, for humans. Craft three engaging social media posts tailored for Linkedin, Facebook, Twitter audiences. Use simple language. Use given labels just to understand the order of the event, don't mention the time in the posts. Each posts should creatively highlight the following events. Ensure the tone is conversational and impactful. Focus on engaging the respective platform's audience, encouraging interaction and driving interest in the events: ${events.map((event)=> event.text).join(', ')}`
-    //             },
-    //         ],
-    //         model: process.env.OPENAI_MODEL
-    //     })
-
-    //     console.log('completion: ',chatCompletion);
-
-    //     //store token count
-    //     await userModel.findOneAndUpdate({
-    //         tgId: from.id
-    //     },{
-    //         $inc:{
-    //             promptTokens: chatCompletion.usage.prompt_tokens,
-    //             completionTokens: chatCompletion.usage.completion_tokens
-    //         }
-    //     })
-    //     await ctx.reply(chatCompletion.choices[0].message.content)
-    // } catch (error) {
-    //     console.log('facing difficulties', error);
-    // }
+   
 
     
-    try {
+   
         // Generate social media posts using Gemini API
         const prompt = `Act as a senior copywriter, you write highly engaging posts for Linkedin, Facebook and Twitter using provided thoughts/events throughout the day.
             
