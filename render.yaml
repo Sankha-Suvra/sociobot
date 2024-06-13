@@ -1,0 +1,13 @@
+services:
+  - type: worker
+    name: sociobot-worker
+    env: node
+    buildCommand: "npm install"
+    startCommand: "node server.js"
+    envVars:
+      - key: TELEGRAM_BOT_API
+        fromDatabase: TELEGRAM_BOT_API_KEY 
+      - key: GEMINI_API_KEY
+        fromDatabase: GEMINI_API_KEY 
+      - key: MONGODB_URI
+        fromDatabase: MONGODB_URI 
