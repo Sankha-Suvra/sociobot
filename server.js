@@ -8,7 +8,7 @@ import express from 'express';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
 const generationConfig = {temperature: 0.9, topP: 1, topK: 1, maxOutputToken: 4096}
-const model = genAI.getGenerativeModel({ model: "gemini-pro", generationConfig});
+const model = genAI.getGenerativeModel({ model: "gemini-pro"});
 
 const bot = new  Telegraf(process.env.TELEGRAM_BOT_API);
 // const apiKey = process.env.GEMINI_API_KEY;
@@ -22,15 +22,13 @@ try {
     console.log("database connected");
 } catch (error) {
     console.log(error);
-    process.exit(1);
-    // process.kill(process.pid, 'SIGTERM ')
+    process.kill(process.pid, 'SIGTERM ')
 }
 
 app.get('/', (req, res) => {
     res.send('Hello World! This is the root route.');
 });
 
-bot.use(app);
 
 bot.start(async (ctx)=>{
 
