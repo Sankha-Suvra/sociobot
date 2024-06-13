@@ -4,15 +4,18 @@ import userModel from './models/User.js'
 import eventModel from './models/Event.js'
 import connectDb from './config/db.js'
 import { message } from "telegraf/filters";
+import express from 'express';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
 const generationConfig = {temperature: 0.9, topP: 1, topK: 1, maxOutputToken: 4096}
-const model = genAI.getGenerativeModel({ model: "gemini-pro"});
+const model = genAI.getGenerativeModel({ model: "gemini-pro", generationConfig});
 
 const bot = new  Telegraf(process.env.TELEGRAM_BOT_API);
-const apiKey = process.env.GEMINI_API_KEY;
-const baseURL = 'https://api.gemini.ai/v1';
+// const apiKey = process.env.GEMINI_API_KEY;
+// const baseURL = 'https://api.gemini.ai/v1';
 
+const app = express();
+app.use(express.json());
 
 try {
     connectDb();
@@ -21,7 +24,13 @@ try {
     console.log(error);
     process.exit(1);
     // process.kill(process.pid, 'SIGTERM ')
-    }
+}
+
+app.get('/', (req, res) => {
+    res.send('Hello World! This is the root route.');
+});
+
+bot.use(app);
 
 bot.start(async (ctx)=>{
 
@@ -139,6 +148,12 @@ bot.on(message('text'), async(ctx) =>{
 
 
 bot.launch()
+
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
 
 // Enable graceful stop
 process.once('SIGINT', () => bot.stop('SIGINT'))
