@@ -12,16 +12,11 @@ const userSchema = mongoose.Schema({
     },
     lastName:{
         type: String,
-        required : true
+        required : false
     },
     isBot:{
         type: Boolean,
         required : true
-    },
-    lastName:{
-        type: String,
-        required : true,
-        unique: true
     },
     promptTokens:{
         type: Number,
